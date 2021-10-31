@@ -184,6 +184,8 @@ def refine_sample(x, D, steps=10, f='KL', eta=0.001, noise_factor=0.0001):
         if x_t.grad is not None:
             x_t.grad.zero_()
         d_score = D(x_t)
+        if d_score.shape[1] == 2:
+            d_score = d_score[:,0]
         
         # calculate d_score using analytical solution
 
@@ -232,6 +234,7 @@ def draw_decision_boundaries(ax, model, x_lim=[-10,10],
     model.eval()
     zz = []
     for s in dataloader:
+        s = s.to(device)
         output = torch.sigmoid(model(s))
         zz.append(output)
         
